@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { __DeleteTodos } from "../../redux/modules/todosSlice";
-import Button from "../../assets/button";
-import { __PostLike } from "../../redux/modules/todosSlice";
-import { __getTodos } from "../../redux/modules/todosSlice";
+import { __DeleteComment } from "../../redux/modules/commentslice";
 
-const Todo = ({ todo }) => {
+const Todo = ({ todo, posts, Setposts }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const onClickDeleteButtonHandler = (todoId) => {
+    Setposts(posts.filter((post) => post.id !== todoId));
     dispatch(__DeleteTodos(todoId));
+    dispatch(__DeleteComment(todoId));
   };
-
-  const [Todo, SetTodo] = useState(todo);
-
-  const [like, Setlike] = useState(0);
 
   // const Likehandler = async () => {
   //   Setlike(like + 1);

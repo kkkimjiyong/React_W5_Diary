@@ -8,10 +8,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const DetailEdit = ({ setEdit, edit, todo }) => {
-  //   const onClickDeleteButtonHandler = (Id) => {
-  //     const { data } = axios.delete(`http://localhost:3001/posts/${Id}`);
-  //     dispatch(Deletelist(data));
-  //   };
   const initialState = {
     id: 0,
     nickname: "",

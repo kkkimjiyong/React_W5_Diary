@@ -24,11 +24,11 @@ const DetailTodo = () => {
 
   const todolist = useSelector((state) => state.todolist.server.todos);
   const comments = useSelector((state) => state.commentlist.comment);
-  // const todoComment = useSelector((state) => state.reducer.comments);
+
   useEffect(() => {
     dispatch(__getTodos());
     dispatch(__getComments());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>

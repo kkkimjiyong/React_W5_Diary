@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Todo from "./Todo";
-import { __getTodos } from "../../redux/modules/todosSlice";
 import { useState } from "react";
 import "../../assets/font.css";
 import Button from "../../assets/button";
@@ -11,11 +10,8 @@ import axios from "axios";
 import { useInView } from "react-intersection-observer";
 
 const TodosList = () => {
-  const dispatch = useDispatch();
   // api에서 가져오면 전역변수가 필요없어지지않나?
-  const { isLoading, error, todos } = useSelector(
-    (state) => state.todolist.server
-  );
+  const { isLoading, error } = useSelector((state) => state.todolist.server);
   // const Todolist = todos.sort((a, b) => a.id - b.id);
 
   const [isSearch, SetisSearch] = useState(true);
@@ -26,18 +22,12 @@ const TodosList = () => {
     SetSearchTodo(value);
   };
 
-  // const [firstlist, Setfirstlist] = useState(splice);
-  // const [secondlist, Setsecondlist] = useState([]);
-
-  // const Scrollhandler = () => {
-  //   Setfirstlist(todos.slice(0, 5));
-  //   Setsecondlist(todos.slice(5));
-  // };
-
+  //무한스크롤구현
   const [posts, Setposts] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(true);
   const page = useRef(1);
 
+  //json에서 5개씩 끊어서 가져오기
   const fetch = useCallback(async () => {
     try {
       const { data } = await axios.get(
@@ -53,19 +43,18 @@ const TodosList = () => {
     }
   }, []);
 
+  //ref를 타겟으로 지정하고, 타겟이 뷰에 보이면 inView의 값이 True로
   const [ref, inView] = useInView();
 
   useEffect(() => {
-    console.log(inView, hasNextPage);
-
     if (inView && hasNextPage) {
       fetch();
     }
   }, [fetch, hasNextPage, inView]);
 
-  //id 시간순으로 정렬
-  const list = [...todos];
-  const lista = list.sort((a, b) => b.id - a.id);
+  // //id 시간순으로 정렬
+  // const list = [...todos];
+  // const lista = list.sort((a, b) => b.id - a.id);
 
   if (isLoading) {
     <div>로딩중입니당</div>;
@@ -102,21 +91,29 @@ const TodosList = () => {
                 {/* 값이 없었다가 있을 때, 실행되게. */}
 
                 {posts.map((todo) => {
-                  return <Todo key={todo.id} todo={todo} />;
+                  return (
+                    <Todo
+                      key={todo.id}
+                      todo={todo}
+                      posts={posts}
+                      Setposts={Setposts}
+                    />
+                  );
                 })}
               </TodosListBox>
-              <div ref={ref} style={{ position: "absolute", bottom: "0px" }}>
-                안녕
-              </div>
+              <div ref={ref} style={{ position: "absolute", bottom: "0px" }} />
             </>
           ) : (
-            <TodosListBox>
-              {lista.map((todo) => {
-                if (todo.nickname == SearchTodo) {
-                  return <Todo key={todo.id} todo={todo} />;
-                }
-              })}
-            </TodosListBox>
+            <>
+              <TodosListBox>
+                {posts.map((todo) => {
+                  if (todo.nickname == SearchTodo) {
+                    return <Todo key={todo.id} todo={todo} />;
+                  }
+                })}
+              </TodosListBox>
+              <div ref={ref} style={{ position: "absolute", bottom: "0px" }} />
+            </>
           )}
         </TodosListCtn>
       </>

@@ -32,7 +32,6 @@ const Comments = ({ id, comment }) => {
     dispatch(__EditComment(editcomment));
     SetEditstatus(!Editstatus);
     seteditComment(initialState);
-    console.log(comment.id);
   };
 
   if (comment.postid === id)
